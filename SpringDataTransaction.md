@@ -130,16 +130,16 @@ SimpleJdbcDAOSupport
 Like JdbcTemplate - Hibernate has Session object which contains different methods for differenct return type.
 Singleton Bean of SessionFactory - which enables one time creation (one object per application)  
 
-"<bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnotationSessionFactoryBean">
+```<bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnotationSessionFactoryBean">
   <property name="datasource" ref="datasource"/>
   <property name="packagesToScan" value="<package that contains model"/>
   <property name="hibernateProperties">
     <props>
-      <prop key="dialect">org.hibernate.dialect.<DB's dialect></prop>
+      <prop key="dialect">org.hibernate.dialect.<DBdialect></prop>
     </props>
   </property>
-</bean>"
-
+</bean>
+```
 Note: AnotationSessionFactoryBean  for Annotated model class
 Annotate Model class
 ```java
@@ -155,7 +155,11 @@ Annotate Model class
      }
  ```
 ```java
+  import org.hibernate.Query;
+  // stereotype to mark the behavior of this class
+  @Repository 
   public class HibernateDAOImpl{
+     @Autowired
      private SessionFactory sessionFactory;
      
      public void setSessionFactory(SessionFactory sessFactory){
@@ -165,7 +169,9 @@ Annotate Model class
         return sessionFactory;
      }
      public int getCustomerCount(){
-       
-    }
+        String hql="select count(*) from Customer";
+        Query query = getSessionFactory().openSession().createQuery(hql);
+        return( (Long)query.uniqueResult()).intValue();
+     }
   }
   ```
