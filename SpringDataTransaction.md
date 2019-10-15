@@ -175,3 +175,95 @@ Annotate Model class
      }
   }
   ```
+
+**Transaction Management**
+----------------------------------------------------------------------------------------------------------------------------------------
+[https://www.javainuse.com/spring/boot-transaction]
+What are Database Transactions?
+A Database transaction is a single logical unit of work which accesses and possibly modifies the contents of a database.
+Begin Transaction
+  Query1
+  Query2
+  Query3
+Commit Transaction
+What are ApplicationTransaction?
+An application transaction is a sequence of application actions that are considered as a single logical unit by the application
+example: newBankAccount is a single logical unit service will call CustomerDetails (Persist Customer Details) & AccountDetails (Persist Account Details) services.
+If AccountDetails service fails CustomerDetails must also be rollback. (by default the CustomerDetails will be committed leading to error in data layer).
+
+**Transaction Management in SpringBoot is AOP: (Cross-cutting functionality)**
+To avoid such situation **Transaction Management is implemented in SpringBoot by *@Transactional* annotation**- This will create a proxy around the logical unit to begintransaction and commit on successful completion of the logical unit instead of every service.
+Note: In SpringBoot like MySql by default autocommit is turned on.
+BanAccountkServiceImpl.java
+```java
+  @Service
+  public class BanAccountkServiceImpl implements BankAccountService{
+    @Autowired
+    CustomerDetailsService customerService;
+    @Autowired
+    AccountDetailsService accountService;
+    
+    @Override
+    @Transactional
+    public void newBankAccount(Customer customer, AccountDetails accountDetails){
+      //proxy - begin transaction
+      customerService.insertCustomer(customer);
+      accountService.insertAccountDetails(accountDetails);
+      //proxy-commit transaction
+    }
+```
+CustomerDetailsServiceImpl.java
+```java
+  @Service
+  public class CustomerDetailsServiceImpl implements CustomerDetailsService{
+    @Autowired
+    CustomerDetailsDAO customerDAO;
+    
+    @Override
+    public void insertCustomer(Customer customer){
+       customerDAO.insertCustomer(customer);
+    }
+```
+AccountDetailsServiceImpl.java
+```java
+  @Service
+  public class AccountDetailsServiceImpl implements AccountDetailsService{
+    @Autowired
+    AccountDetailsDAO accountDAO;
+    
+    @Override
+    public void insertAccountDetails(AccountDetails accountDetails){
+      accountDAO.insertAccountDetails(accountDetails);
+    }
+```
+**Transaction Propagation**
+Transaction Propagation indicates whether the calling service will or will not participate in transaction and how it behaves if the callling service is already created a transaction.
+In above example if CustomerDetailsService is directly called commit and rollback may not be handled.
+Adding @Transactional annotation to these services individually will solve this issue.
+
+CustomerDetailsServiceImpl.java
+```java
+  @Service
+  public class CustomerDetailsServiceImpl implements CustomerDetailsService{
+    @Autowired
+    CustomerDetailsDAO customerDAO;
+    
+    @Override
+    @Transactional
+    public void insertCustomer(Customer customer){
+       customerDAO.insertCustomer(customer);
+    }
+```
+AccountDetailsServiceImpl.java
+```java
+  @Service
+  public class AccountDetailsServiceImpl implements AccountDetailsService{
+    @Autowired
+    AccountDetailsDAO accountDAO;
+    
+    @Override
+    @Transactional
+    public void insertAccountDetails(AccountDetails accountDetails){
+      accountDAO.insertAccountDetails(accountDetails);
+    }
+``` 
