@@ -212,22 +212,36 @@ Transaction Isolation at SQL level:
     COMMIT
 ~~
 
-**SERIALIZABLE:**
-    If two transcation executing concurrently is considered to be as serial execution where one transaction gets committed and the next is executed. This is **total isolation**
-    low performance and deadlock might occur
-**REPEATABLE_READ:**
-    Till first transaction is committed, existing records cannnot be modified by second transaction but new records can be added by second  transaction. After second is committed, newl added records get reflected in first transaction which is still not committed
-**READ_COMMITTED:**
-    Before first transaction is committed, second can modify existing record or add new record and commit. These data will be reflectd in first transaction which is not committed.
+1. **SERIALIZABLE:**
+    	- If two transcation executing concurrently is __*considered to be as serial execution*__ where one transaction gets committed and the next is executed. 
+	- This is **total isolation**.
+   	- creates low performance and deadlock might occur
+2. **REPEATABLE_READ:**
+    	- Till first transaction is committed, existing records __*cannnot be modified*__ by second transaction but __*new records can be added*__ by second  transaction. 
+	- After second is committed, newly added records get reflected in first transaction which is still not committed
+3. **READ_COMMITTED:**
+    	- Before first transaction is committed, second __*can modify existing record or add new record and commit*__. 
+	- These __*data will be reflected in first transaction which is not committed*__.
+4. **READ_UNCOMMITTED**
+	- When two concurrent transactions are executed, before the first transaction is committed, second __*can alter existing or add new records*___.
+	- Even when __*second is not committed we still can see the changes reflected when first executes a select again*__.
 
 **Dirty Reads**
   - Transaction read data that are not committed by other Transaction.
-    T1 and T2 runs concurrently, T1 modifies record and T2 reads records, but T1 rollbacks the changes for the record and commits. T2 will be having a wrong data.
+    ex., T1 and T2 runs concurrently, T1 modifies record and T2 reads records, but T1 rollbacks the changes for the record and commits. T2 will be having a wrong data.
+   - read UNCOMMITED data from another transaction
 **Non_repeatable Reads**
   - Performing the same query twice may return different data.
-    T1 and T2 runs concurrently, T1 reads record and T2 modifies records before T1 has been committed, but T1 reads the records again they will be different. 
+    eg., T1 and T2 runs concurrently, T1 reads record and T2 modifies records before T1 has been committed, but T1 reads the records again they will be different. 
+  - read COMMITTED data from an UPDATE query from another transaction
 **Phantom Reads**
-
+  - Perform same query twice for a range may return different data.
+  - read COMMITTED data from an INSERT or DELETE query from another transaction
+  
+___Non_Repetable read vs Phantom Read__
+  - Non Repeatable is for single row
+  - Phantom is for a range of records.
+  
 | Isolation Level  | Dirty Reads                                                                  | Non_Repetable Read                                                         | Phantom Read                                                   |
 |------------------|------------------------------------------------------------------------------|----------------------------------------------------------------------------|----------------------------------------------------------------|
 | Serializable     | Not possible                                                                 | Not possible                                                               | Not possible                                                   |
@@ -235,6 +249,14 @@ Transaction Isolation at SQL level:
 | Read_Committed   | Not possible                                                                 | Possible As T2 can modify  existing records even if first is not committed | Possible As T2 can insert records even if T1 is not committed. |
 | Read_Uncommitted | Reading data when T1 is not committed If T1 rollback T2 will have wrong data | Possible                                                                   | Possible                                                       |
 
+Benefits of different isolation levels
+ - READ_UNCOMMITTED prevents nothing. It's the zero isolation level
+-  READ_COMMITTED prevents just one, i.e. Dirty reads
+-  REPEATABLE_READ prevents two anomalies: Dirty reads and Non-repeatable reads
+-  SERIALIZABLE prevents all three anomalies: Dirty reads, Non-repeatable reads and Phantom reads
+
+Isolation Level in SpringBoot:
+	- is the default level in underlying database. i.e., If underlying database is MySQL, the isolation level is REPETABLE_READ.
 
 ~~~ // Using Transactional annotation we can define any isolation level supported by the underlying database.
 	@Transactional(isolation = Isolation.SERIALIZABLE)
