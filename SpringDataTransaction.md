@@ -408,3 +408,11 @@ Phantom Reads
 | Read_Committed   | Not possible                                                                 | Possible As T2 can modify  existing records even if first is not committed | Possible As T2 can insert records even if T1 is not committed. |
 | Read_Uncommitted | Reading data when T1 is not committed If T1 rollback T2 will have wrong data | Possible                                                                   | Possible                                                       |
 
+
+~~~ // Using Transactional annotation we can define any isolation level supported by the underlying database.
+	@Transactional(isolation = Isolation.SERIALIZABLE)
+~~~
+
+Note:
+----
+[https://dzone.com/articles/spring-transaction-management] - talks about Programmatic Transaction Management and Declarative Transaction Management.
