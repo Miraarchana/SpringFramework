@@ -124,12 +124,13 @@ SimpleJdbcDAOSupport
         return this.jdbcTemplate.queryForInt(sql); //how to decide which method to be called - Using method given below in getCustomer()
     }
   }
-  ```
+```
+  
 **Using Hibernate with Spring**
 Like JdbcTemplate - Hibernate has Session object which contains different methods for differenct return type.
 Singleton Bean of SessionFactory - which enables one time creation (one object per application)  
 
-<bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnotationSessionFactoryBean">
+"<bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnotationSessionFactoryBean">
   <property name="datasource" ref="datasource"/>
   <property name="packagesToScan" value="<package that contains model"/>
   <property name="hibernateProperties">
@@ -137,7 +138,8 @@ Singleton Bean of SessionFactory - which enables one time creation (one object p
       <prop key="dialect">org.hibernate.dialect.<DB's dialect></prop>
     </props>
   </property>
-</bean>
+</bean>"
+
 Note: AnotationSessionFactoryBean  for Annotated model class
 Annotate Model class
 ```java
