@@ -38,18 +38,26 @@ JDBC module in Spring:
 ```java
   @Component
   public class JdbcDAOImpl{
+    @Autowired
+    private DataSource datasource;
+    
     public Customer getCustomer(String custID){
       Connection conn = null;
       try{
-          String driver = "org.apache.derby.jdbc.ClientDriver";
-          Class.forName(driver).newInstance();
-          conn = DriverManager.getConnection("jdbc:derby....localhost..");
+          //connecting to DB
+          //create datasource bean *DriverManagerDataSource* in configuration file and driverclass and url is specified in it.
+          //getConnection
+          conn = datasource.getConnection("jdbc:derby....localhost..");
+          //Preparing the SQL statement
           PreparedStatement pstmt=conn.prepareStatement("SELECT * from Customer where id =?");
           pstmt.setInt(1,custID);
+          //Exceuting the statement
           ResultSet rs= pstmt.executeQuery();
+          //parsing the result
           if(rs.next()){
             Customer cust = new Customer(custID,rs.getString("name"));
           }
+          //closing
           rs.close();
           pstmt.close();
           return cust;
