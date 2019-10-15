@@ -1,7 +1,7 @@
 **Hibernate**
-  -ORM Tool
-  -used in data layer where we have to persist application data to database
-  -implements JPA(Java Persistence API) means it implements set of rules which helps in decoupling ORM tool with another without any change in application.
+  - ORM Tool
+  - used in data layer where we have to persist application data to database
+  - implements JPA(Java Persistence API) means it implements set of rules which helps in decoupling ORM tool with another without any change in application.
   
 Without Hibernate
 - Mapping member variables to column manually
@@ -35,3 +35,4 @@ changing to update - drops and updates only if there is any change in schema
 
 *[http://www.techferry.com/articles/hibernate-jpa-annotations.html]
 
+@GenerateValue = database to generate(incremental) that ID column
