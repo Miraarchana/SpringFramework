@@ -4,7 +4,7 @@ supported by
   - JDBC module
   - ORM framework module (Hibernate, JPA, iBatis)
   
-JDBC module in Java:
+**JDBC module in Java:**
 ```java
   public class JdbcDAOImpl{
     public Customer getCustomer(String custID){
@@ -34,7 +34,7 @@ JDBC module in Java:
       }
   }
 ```
-JDBC module in Spring:
+**JDBC module in Spring:**
   - advantage DataSource is created common to all implementation and we can easily replace another data source implementation class in configuration without modifying the code.
   
 ```java
@@ -75,7 +75,8 @@ JDBC module in Spring:
       }
   }
 ```
-Using JDBCTemplate - set of methods provided by Spring for setting before query execution and after execution.
+**Using JDBCTemplate **
+- set of methods provided by Spring for setting before query execution and after execution.
 JDBCTemplate has no idea about the object that is to be mapped for custom type.
 ```java
   @Component
@@ -108,7 +109,8 @@ JDBCTemplate supports mapping result to custom object using *RowMapper* class.
 But application must implement RowMapper class to use it.
 ------------------------------------------------------------------------------------------------------------------------
 
-DAO support - Any DAOImpl must implement a DAOSupport which will take care of Datasource and jdcTemplate
+**DAO support**
+- Any DAOImpl must implement a DAOSupport which will take care of Datasource and jdcTemplate
 SimpleJdbcDAOSupport
 
 ```java
@@ -120,6 +122,48 @@ SimpleJdbcDAOSupport
      public int getCustomerCount(){
         String sql=conn.prepareStatement("SELECT COUNT(*) from Customer");
         return this.jdbcTemplate.queryForInt(sql); //how to decide which method to be called - Using method given below in getCustomer()
+    }
+  }
+  ```
+**Using Hibernate with Spring**
+Like JdbcTemplate - Hibernate has Session object which contains different methods for differenct return type.
+Singleton Bean of SessionFactory - which enables one time creation (one object per application)  
+
+<bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnotationSessionFactoryBean">
+  <property name="datasource" ref="datasource"/>
+  <property name="packagesToScan" value="<package that contains model"/>
+  <property name="hibernateProperties">
+    <props>
+      <prop key="dialect">org.hibernate.dialect.<DB's dialect></prop>
+    </props>
+  </property>
+</bean>
+Note: AnotationSessionFactoryBean  for Annotated model class
+Annotate Model class
+```java
+   import javax.persistence.Entity;
+   import javax.persistence.Id;
+    @Entity
+          public class Customer{
+            @Id
+            private int custId;
+            .
+            .
+        
+     }
+ ```
+```java
+  public class HibernateDAOImpl{
+     private SessionFactory sessionFactory;
+     
+     public void setSessionFactory(SessionFactory sessFactory){
+        sessionFactory= sessFactory;
+     }
+     public SessionFactory getSessionFactory(){
+        return sessionFactory;
+     }
+     public int getCustomerCount(){
+       
     }
   }
   ```
