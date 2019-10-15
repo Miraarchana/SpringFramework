@@ -16,6 +16,12 @@ An application transaction is a sequence of application actions that are conside
 example: newBankAccount is a single logical unit service will call CustomerDetails (Persist Customer Details) & AccountDetails (Persist Account Details) services.
 If AccountDetails service fails CustomerDetails must also be rollback. (by default the CustomerDetails will be committed leading to error in data layer).
 
+Note: Any database transaction, by defintion must be **ACID**
+1. **Atomic** - either entire transaction or nothing occurs. No partial commit
+2. **Consistent** - Any change made during a transaction must adhere to database constraints like data integrity (primary key violation)
+3. **Isolation** - One transaction changes must not affect other transaction
+4. **Durability** - guarantee that committed transaction will survive permanently.
+
 **Transaction Management in SpringBoot is AOP: (Cross-cutting functionality)**
 To avoid such situation **Transaction Management is implemented in SpringBoot by *@Transactional* annotation**- This will create a proxy around the logical unit to begintransaction and commit on successful completion of the logical unit instead of every service.
 Note: In SpringBoot like MySql by default autocommit is turned on.
