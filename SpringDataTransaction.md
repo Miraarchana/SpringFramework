@@ -290,7 +290,7 @@ AccountDetailsServiceImpl.java
          customerDAO.insertCustomer(customer);
       }
     ```
- **SUPPORT** 
+    **SUPPORT** 
     example: 
     case1: If the CustomerDetailsService called directly - DOES NOT CREATE
     case2: If the CustomerDetailsService called from BankAccountService.
@@ -303,7 +303,7 @@ AccountDetailsServiceImpl.java
          customerDAO.insertCustomer(customer);
       }
     ```
-  **REQUIRES_NEW** 
+    **REQUIRES_NEW** 
     example: 
     case1: If the CustomerDetailsService called directly - CREATES ITS OWN TRANSACTION
     case2: If the CustomerDetailsService called from BankAccountService.
@@ -316,7 +316,7 @@ AccountDetailsServiceImpl.java
          customerDAO.insertCustomer(customer);
       }
     ```
-   **NOT_SUPPORTED** 
+    **NOT_SUPPORTED** 
    example: 
     case1: If the CustomerDetailsService called directly - DOES NOT CREATE
     case2: If the CustomerDetailsService called from BankAccountService.
@@ -329,7 +329,7 @@ AccountDetailsServiceImpl.java
          customerDAO.insertCustomer(customer);
       }
     ```
-**NEVER** 
+    **NEVER** 
 example: 
     case1: If the CustomerDetailsService called directly - DOES NOT CREATE
     case2: If the CustomerDetailsService called from BankAccountService.
@@ -342,7 +342,7 @@ example:
          customerDAO.insertCustomer(customer);
       }
     ```
-**MANDATORY**
+   **MANDATORY**
 example: 
     case1: If the CustomerDetailsService called directly - THROW AN EXCEPTION
     case2: If the CustomerDetailsService called from BankAccountService.
@@ -355,7 +355,8 @@ example:
          customerDAO.insertCustomer(customer);
       }
     ```
- **Transcational RollBack**
+
+**Transcational RollBack**
 ------------------------
     In case of checked exception the previous operations done by a service cannot be stopped from saving even when Transcation is yet to be committed.
   @Transactional(rollbackFor=InvalidAccountTypeException.class) must be specified in parent service class    
@@ -371,7 +372,7 @@ Transaction Isolation at SQL level:
     //Show existing transaction isolation level if mysql version >= 8
     SELECT @@TRANSACTION_ISOLATION;
 
-    //Show existing transaction isolation level if mysql version < 8
+     //Show existing transaction isolation level if mysql version < 8
     SELECT @@TX_ISOLATION;
 
     //Set transaction isolation level to serializable. Using same syntax 
