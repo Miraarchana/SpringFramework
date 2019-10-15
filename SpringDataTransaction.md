@@ -35,11 +35,13 @@ JDBC module in Java:
   }
 ```
 JDBC module in Spring:
+  - advantage DataSource is created common to all implementation and we can easily replace another data source implementation class in configuration without modifying the code.
+  
 ```java
   @Component
   public class JdbcDAOImpl{
     @Autowired
-    private DataSource datasource;
+    private DataSource datasource; // create getter and setter for autowiring
     
     public Customer getCustomer(String custID){
       Connection conn = null;
@@ -71,5 +73,29 @@ JDBC module in Spring:
           }catch(SQLException e){}
         }
       }
+  }
+```
+Using JDBCTemplate - set of methods provided by Spring for setting before query execution and after execution.
+
+```java
+  @Component
+  public class JdbcDAOImpl{
+    private DataSource datasource; // create getter and setter for autowiring
+  
+    private JdbcTemplate jdbcTemplate = new JdbcTemplate();
+    
+    public int getCustomerCount(String custID){
+        String sql=conn.prepareStatement("SELECT COUNT(*) from Customer");
+        return jdbcTemplate.queryForInt(sql); //how to decide which method to be called - Using 
+    }
+    public DataSource getDatasource(){
+        return datasource;
+    }
+    
+    @Autowired
+    public void setDataSource(DataSource datasource){//datasource setter is used to pass datasource to JDBCTemplate
+        this.jdbcTemplate = new JdbcTemplate(datasource);
+    }
+    
   }
 ```
