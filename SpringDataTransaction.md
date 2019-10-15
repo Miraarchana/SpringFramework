@@ -76,7 +76,7 @@ JDBC module in Spring:
   }
 ```
 Using JDBCTemplate - set of methods provided by Spring for setting before query execution and after execution.
-
+JDBCTemplate has no idea about the object that is to be mapped for custom type.
 ```java
   @Component
   public class JdbcDAOImpl{
@@ -84,9 +84,14 @@ Using JDBCTemplate - set of methods provided by Spring for setting before query 
   
     private JdbcTemplate jdbcTemplate = new JdbcTemplate();
     
-    public int getCustomerCount(String custID){
+    public int getCustomerCount(){
         String sql=conn.prepareStatement("SELECT COUNT(*) from Customer");
-        return jdbcTemplate.queryForInt(sql); //how to decide which method to be called - Using 
+        return jdbcTemplate.queryForInt(sql); //how to decide which method to be called - Using method given below in getCustomer()
+    }
+    
+    public String getCustomer(String custId){
+        String sql=conn.prepareStatement("SELECT custname from Customer where custId=?");
+        return jdbcTemplate.queryForObject(sql,new Object[]{custId},String.class); //new object arr for arguments and datatype of return value is String
     }
     public DataSource getDatasource(){
         return datasource;
