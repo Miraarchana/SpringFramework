@@ -82,7 +82,7 @@ JDBCTemplate has no idea about the object that is to be mapped for custom type.
   public class JdbcDAOImpl{
     private DataSource datasource; // create getter and setter for autowiring
   
-    private JdbcTemplate jdbcTemplate = new JdbcTemplate();
+    private JdbcTemplate jdbcTemplate;
     
     public int getCustomerCount(){
         String sql=conn.prepareStatement("SELECT COUNT(*) from Customer");
@@ -104,3 +104,22 @@ JDBCTemplate has no idea about the object that is to be mapped for custom type.
     
   }
 ```
+JDBCTemplate supports mapping result to custom object using *RowMapper* class.
+But application must implement RowMapper class to use it.
+------------------------------------------------------------------------------------------------------------------------
+
+DAO support - Any DAOImpl must implement a DAOSupport which will take care of Datasource and jdcTemplate
+SimpleJdbcDAOSupport
+
+```java
+  public class JdbcDAOImpl implements SimpleJdbcDAOSupport{
+     //member variables can be used to autowire by defining a Bean in configuration
+     //<bean id="simplejdbcdaosupport" class="...JdbcDAOImpl">
+     //<property name="datasource" red="datasource"></bean>
+     
+     public int getCustomerCount(){
+        String sql=conn.prepareStatement("SELECT COUNT(*) from Customer");
+        return this.jdbcTemplate.queryForInt(sql); //how to decide which method to be called - Using method given below in getCustomer()
+    }
+  }
+  ```
